@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="500.0" minWidth="720.0" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.pascalwagler.gso.MainWindowController">
+   <center>
+      <SplitPane dividerPositions="0.5" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="500.0" prefWidth="720.0" BorderPane.alignment="CENTER">
+         <items>
+            <Canvas fx:id="canvas" height="500.0" width="500.0" />
+            <VBox spacing="8.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Population Size" />
+                  <TextField fx:id="populationSize" promptText="Population Size" />
+                  <Label text="Max Iterations" />
+                  <TextField fx:id="maxIterations" promptText="Max Iterations" />
+                  <Label text="Initial Range (r0)" />
+                  <TextField fx:id="initialRange" promptText="Initial Range" />
+                  <Separator prefWidth="200.0" />
+                  <CheckBox fx:id="showTrail" mnemonicParsing="false" selected="true" text="Show Trail" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Glowworm Size" />
+                  <HBox spacing="8.0">
+                     <children>
+                        <Slider fx:id="glowwormSizeSlider" max="15.0" min="1.0" value="2.0" HBox.hgrow="ALWAYS">
+                           <HBox.margin>
+                              <Insets top="5.0" />
+                           </HBox.margin></Slider>
+                        <TextField fx:id="glowwormSizeTextField" editable="false" maxWidth="50.0" prefHeight="27.0" prefWidth="50.0" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <Separator prefWidth="200.0" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Objective Function" />
+                  <ChoiceBox fx:id="functionChoiceBox" maxWidth="1.7976931348623157E308" />
+                  <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                  <Hyperlink onAction="#openGithubURL" text="View this project on Github" />
+                  <HBox spacing="8.0">
+                     <children>
+                        <Button fx:id="resetButton" cancelButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#resetForm" text="Reset Form" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="drawButton" defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#drawCanvas" text="Draw" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
+            </VBox>
+         </items>
+      </SplitPane>
+   </center>
+</BorderPane>
