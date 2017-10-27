@@ -31,7 +31,7 @@ The parameters *population size*, *iterations*, and *the initial neighborhood ra
 
 1. The new calculated position of the glowworms from the iteration *t* should be applied at iteration *t+1* and not at the same iteration (see GSOAlgorithm.java, Lines 127 and 128).
 
-## License
+## License & Credit
 
 This project is open source licensed under the BSD 3-Clause License. Please see the [LICENSE file](LICENSE.md) for more information. 
 
@@ -39,4 +39,16 @@ If you use this app or the code in a presentation or lecture you could credit me
 
 ```
 Pascal Wagler (2017). "Glowworm Swarm Optimization Java" (https://github.com/Wandmalfarbe/Glowworm-Swarm-Optimization-Java)
+```
+
+Users of LaTeX are encouraged to cite with the following BibLaTeX entry:
+
+```
+@software{WaglerGlowwormSwarmOptimization2017,
+  title = {Glowworm {{Swarm Optimization Java}}},
+  url = {https://github.com/Wandmalfarbe/Glowworm-Swarm-Optimization-Java},
+  abstract = {A Java implementation and visualization of the glowworm swarm optimization (GSO) algorithm invented by K.N. Krishnanand and Debasish Ghose.},
+  author = {Wagler, Pascal},
+  date = {2017-10-27}
+}
 ```
