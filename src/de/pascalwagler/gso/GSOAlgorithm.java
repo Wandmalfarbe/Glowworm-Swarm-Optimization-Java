@@ -9,7 +9,7 @@ import de.pascalwagler.gso.vis.Function;
 
 /**
  * Implements the glowworm swarm optimization (GSO) algorithm 
- * from K.N. Krishnanand and D. Ghose.
+ * from Krishnanand N. Kaipa and Debasish Ghose.
  * 
  * @author Pascal Wagler
  */

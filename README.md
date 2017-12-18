@@ -2,7 +2,7 @@
 
 # Glowworm Swarm Optimization Java
 
-A Java implementation and visualization of the glowworm swarm optimization (GSO) algorithm invented by K.N. Krishnanand and Debasish Ghose for the capturing of multiple optima of multimodal functions.
+A Java implementation and visualization of the glowworm swarm optimization (GSO) algorithm invented by Krishnanand N. Kaipa and Debasish Ghose for the capturing of multiple optima of multimodal functions.
 
 ![A preview of the Java application.](preview/java-app.png)
 
@@ -25,7 +25,7 @@ The parameters *population size*, *iterations*, and *the initial neighborhood ra
 ## Credits
 
 - This Program contains code from [CircleSkinner](https://github.com/tinevez/CircleSkinner/blob/master/src/main/java/net/imagej/circleskinner/util/ColorMap.java) made by [Jean-Yves Tinevez](https://github.com/tinevez).
-- The GSO Algorithm was invented by K.N. Krishnanand and Debasish Ghose.
+- The GSO Algorithm was invented by Krishnanand N. Kaipa and Debasish Ghose.
 
 ## Known Bugs
 
