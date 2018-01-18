@@ -45,6 +45,8 @@ public class GSOAlgorithm {
 	private Function j;
 	private IterationCallback iterationCallback;
 
+	Random rand = new Random();
+	
 	public GSOAlgorithm(GSOParameters params, Function j, IterationCallback iterationCallback) {
 		
 		this.numGlowworms = params.populationSize;
@@ -104,15 +106,15 @@ public class GSOAlgorithm {
 			for(Glowworm i: glowworms) {
 
 				List<Glowworm> neighborhood = getNeighborhood(i, glowworms);
-				List<Double> propabilities = new ArrayList<Double>(neighborhood.size());
+				List<Double> probabilities = new ArrayList<Double>(neighborhood.size());
 				double liciferinSumOfNeighborhood = sumLuciferin(neighborhood);
 
 				for(int c = 0; c < neighborhood.size(); c++) {
 					Glowworm j = neighborhood.get(c);
-					double propability = (j.luciferin - i.luciferin) / (liciferinSumOfNeighborhood - i.luciferin);
-					propabilities.add(propability);
+					double probability = (j.luciferin - i.luciferin) / (liciferinSumOfNeighborhood - i.luciferin);
+					probabilities.add(probability);
 				}
-				Glowworm j = selectGlowworm(neighborhood, propabilities);
+				Glowworm j = selectGlowworm(neighborhood, probabilities);
 
 				if(j != null) {
 					/**
@@ -150,14 +152,13 @@ public class GSOAlgorithm {
 	}
 
 	/**
-	 * Selects one glowworm from a neighborhood based on selection propabilities.
+	 * Selects one glowworm from a neighborhood based on selection probabilities.
 	 * Internally a <i>fitness proportionate selection</i> also known as a <i>roulette wheel selection</i>
 	 * is used.
 	 */
-	private Glowworm selectGlowworm(List<Glowworm> neighborhood, List<Double> propabilities) {
+	private Glowworm selectGlowworm(List<Glowworm> neighborhood, List<Double> probabilities) {
 
-		double[] propArray = propabilities.stream().mapToDouble(i -> i).toArray();
-		int index = rouletteSelect(propArray);
+		int index = rouletteSelect(probabilities);
 
 		if(neighborhood.size() > 0) {
 			return neighborhood.get(index);
@@ -171,26 +172,26 @@ public class GSOAlgorithm {
 	 * Returns the selected index based on the weights (probabilities).
 	 * Source: https://en.wikipedia.org/wiki/Fitness_proportionate_selection#Java_-_linear_O.28n.29_version
 	 * 
-	 * @param weight The array of weights (propabilities)
+	 * @param weight The list of weights (probabilities)
 	 * @return Returns the selected index based on the weights (probabilities)
 	 */
-	private int rouletteSelect(double[] weight) {
+	private int rouletteSelect(List<Double> weight) {
 		
 		// calculate the total weight
 		double weight_sum = 0;
-		for(int i=0; i<weight.length; i++) {
-			weight_sum += weight[i];
+		for(int i=0; i<weight.size(); i++) {
+			weight_sum += weight.get(i);
 		}
 		
 		// get a random value
 		double value = randUniformPositive() * weight_sum;	
 		// locate the random value based on the weights
-		for(int i=0; i<weight.length; i++) {		
-			value -= weight[i];		
+		for(int i=0; i<weight.size(); i++) {		
+			value -= weight.get(i);		
 			if(value <= 0) return i;
 		}
 		// only when rounding errors occur
-		return weight.length - 1;
+		return weight.size() - 1;
 	}
 
 	/**
@@ -201,8 +202,7 @@ public class GSOAlgorithm {
 	 * @return A uniformly distributed double value between min and max.
 	 */
 	private double randDoubleInRange(double min, double max) {
-		Random r = new Random(); // TODO: Make r a field and init only once
-		return min + (max - min) * r.nextDouble();
+		return min + (max - min) * rand.nextDouble();
 	}
 	
 	/**
@@ -211,7 +211,7 @@ public class GSOAlgorithm {
 	 * @return A uniformly distributed double value between 0.0 and 1.0
 	 */
 	private double randUniformPositive() {
-		return new Random().nextDouble(); // TODO: Make r a field and init only once
+		return rand.nextDouble();
 	}
 	
 	/**
