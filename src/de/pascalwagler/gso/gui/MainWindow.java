@@ -1,4 +1,4 @@
-package de.pascalwagler.gso;
+package de.pascalwagler.gso.gui;
 
 import javafx.application.Application;
 import javafx.application.HostServices;

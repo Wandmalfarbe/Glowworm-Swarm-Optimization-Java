@@ -37,7 +37,7 @@ public class GSOAlgorithm {
 	 * Live updating
 	 */
 	int t = 1;
-	Glowworm[] glowworms;
+	public Glowworm[] glowworms;
 
 	/**
 	 * Functions & Callbacks
@@ -59,29 +59,12 @@ public class GSOAlgorithm {
 
 		this.glowworms = new Glowworm[numGlowworms];
 	}
-
+	
 	/**
-	 * Starts the glowworm swarm optimization and returns immediately.
-	 * The result is given as a CompletableFuture which can be checked
-	 * for completion with {@link java.util.concurrent.CompletableFuture#isDone()} (blocking) alternatively
-	 * you can run code after completion with {@link java.util.concurrent.CompletableFuture#thenRun(Runnable)} (non blocking).
-	 * 
-	 * @return The CompletableFuture of this (potentially long running) operation.
+	 * Initialization
 	 */
-	public CompletableFuture<Void> start() {
-
-		return CompletableFuture.runAsync(() -> { internalStart(); } );
-	}
-
-	/**
-	 * Performs the glowworm swarm optimization.
-	 * Only used internally because it is a blocking operation.
-	 */
-	private void internalStart() {
-
-		/**
-		 * Initialization
-		 */
+	public void initialize() {
+		
 		for(int g = 0; g < glowworms.length; g++) {
 
 			double posX = randDoubleInRange(j.minX, j.maxX);
@@ -89,10 +72,14 @@ public class GSOAlgorithm {
 
 			glowworms[g] = new Glowworm(l_0, posX, posY, r_0);
 		}
+	}
 
-		iterationCallback.iterationFinished(this);
+	/**
+	 * Performs one discrete time step of the glowworm swarm optimization.
+	 */
+	public void step() {
 
-		for(; t<= iterMax; t++) {
+		//for(; t<= iterMax; t++) {
 			/**
 			 * Luciferin Update
 			 */
@@ -137,7 +124,7 @@ public class GSOAlgorithm {
 			}
 			
 			iterationCallback.iterationFinished(this);
-		}
+		//}
 	}
 
 	/**
@@ -256,42 +243,5 @@ public class GSOAlgorithm {
 	private double distance(Glowworm g1, Glowworm g2) {
 		// TODO: It may be quicker to remove the square root
 		return Math.sqrt(Math.pow((g2.posX - g1.posX), 2) + Math.pow((g2.posY - g1.posY), 2));
-	}
-}
-
-class Glowworm {
-
-	public double luciferin;
-	public double posX;
-	public double posY;
-	public double range;
-
-	public Glowworm(double luciferin, double positionX, double positionY, double range) {
-		this.luciferin = luciferin;
-		this.posX = positionX;
-		this.posY = positionY;
-		this.range = range;
-	}
-
-	@Override
-	public String toString() {
-		return "\"Glowworm\": {\n\t\"luciferin\": \"" + luciferin
-				+ "\", \n\t\"posX\": \"" + posX + "\", \n\t\"posY\": \"" + posY
-				+ "\", \n\t\"range\": \"" + range + "\"\n}";
-	}
-}
-
-class GSOParameters {
-	
-	public int populationSize;
-	public int maxIterations;
-	public double initialSensorRange;
-	public double maxSensorRange;
-	
-	public GSOParameters(int populationSize, int maxIterations, double initialSensorRange, double maxSensorRange) {
-		this.populationSize = populationSize;
-		this.maxIterations = maxIterations;
-		this.initialSensorRange = initialSensorRange;
-		this.maxSensorRange = maxSensorRange;
 	}
 }

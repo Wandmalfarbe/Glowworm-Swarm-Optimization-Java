@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="500.0" minWidth="720.0" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.pascalwagler.gso.MainWindowController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="500.0" minWidth="720.0" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.pascalwagler.gso.gui.MainWindowController">
    <center>
       <SplitPane dividerPositions="0.5" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="500.0" prefWidth="720.0" BorderPane.alignment="CENTER">
          <items>
@@ -38,8 +38,20 @@
                         <Slider fx:id="glowwormSizeSlider" max="15.0" min="1.0" value="2.0" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets top="5.0" />
-                           </HBox.margin></Slider>
+                           </HBox.margin>
+                        </Slider>
                         <TextField fx:id="glowwormSizeTextField" editable="false" maxWidth="50.0" prefHeight="27.0" prefWidth="50.0" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Animation Speed" />
+                  <HBox spacing="8.0">
+                     <children>
+                        <Slider fx:id="animationSpeedSlider" max="2000" min="1" value="500" HBox.hgrow="ALWAYS">
+                           <HBox.margin>
+                              <Insets top="5.0" />
+                           </HBox.margin>
+                        </Slider>
+                        <TextField fx:id="animationSpeedTextField" editable="false" maxWidth="50.0" prefHeight="27.0" prefWidth="50.0" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   <Separator prefWidth="200.0" />
@@ -50,7 +62,7 @@
                   <HBox spacing="8.0">
                      <children>
                         <Button fx:id="resetButton" cancelButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#resetForm" text="Reset Form" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="drawButton" defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#drawCanvas" text="Draw" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="startStopButton" defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#startStop" text="Start" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                </children>

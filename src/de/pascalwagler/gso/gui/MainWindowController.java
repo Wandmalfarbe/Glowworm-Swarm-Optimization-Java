@@ -1,11 +1,33 @@
-package de.pascalwagler.gso;
+package de.pascalwagler.gso.gui;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.CompletableFuture;
 
+import de.pascalwagler.gso.GSOAlgorithm;
+import de.pascalwagler.gso.GSOParameters;
+import de.pascalwagler.gso.Glowworm;
+import de.pascalwagler.gso.IterationCallback;
+import de.pascalwagler.gso.functions.BealeFunction;
+import de.pascalwagler.gso.functions.BoothFunction;
+import de.pascalwagler.gso.functions.CirclesFunction;
+import de.pascalwagler.gso.functions.DistanceToPoint;
+import de.pascalwagler.gso.functions.EasomFunction;
+import de.pascalwagler.gso.functions.EggholderFunction;
+import de.pascalwagler.gso.functions.EqualPeaksFunction;
+import de.pascalwagler.gso.functions.HimmelblauFunction;
+import de.pascalwagler.gso.functions.HoelderTableFunction;
+import de.pascalwagler.gso.functions.LeviFunctionN13;
+import de.pascalwagler.gso.functions.MatyasFunction;
+import de.pascalwagler.gso.functions.ObjectiveFunction;
+import de.pascalwagler.gso.functions.PeaksFunction;
+import de.pascalwagler.gso.functions.PlateausFunction;
+import de.pascalwagler.gso.functions.RastriginFunction;
+import de.pascalwagler.gso.functions.SchafferN2Function;
+import de.pascalwagler.gso.functions.StaircaseFunction;
 import de.pascalwagler.gso.vis.ColorMapper;
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -33,9 +55,11 @@ public class MainWindowController implements Initializable, IterationCallback {
 	@FXML private CheckBox showTrail;
 	@FXML private Slider glowwormSizeSlider;
 	@FXML private TextField glowwormSizeTextField;
+	@FXML private Slider animationSpeedSlider;
+	@FXML private TextField animationSpeedTextField;
 	@FXML private ChoiceBox<ObjectiveFunction> functionChoiceBox;
 	@FXML private Button resetButton;
-	@FXML private Button drawButton;
+	@FXML private Button startStopButton;
 
 	private GraphicsContext gc;
 	private double scale;
@@ -48,9 +72,15 @@ public class MainWindowController implements Initializable, IterationCallback {
 	private Image functionImage;
 	private ObjectiveFunction function;
 
+	private long lastUpdate = 0;
+	private GSOAlgorithm algorithm;
+	private AnimationTimer timer;
+	private boolean animationIsRunning = false;
+	private int animationSpeed = 500;
+
 	public MainWindowController() {
 
-		resetFunction(new FunctionJ1());
+		resetFunction(new PeaksFunction());
 	}
 
 	@Override
@@ -60,13 +90,22 @@ public class MainWindowController implements Initializable, IterationCallback {
 		canvas.setHeight( function.getHeight() * scale);
 
 		List<ObjectiveFunction> functions = new ArrayList<>();
-		functions.add(new FunctionJ1());
-		functions.add(new FunctionJ2());
-		functions.add(new FunctionJ3());
-		functions.add(new FunctionJ4());
-		functions.add(new FunctionJ5());
-		functions.add(new FunctionJ8());
-		functions.add(new FunctionJ9());
+		functions.add(new PeaksFunction());
+		functions.add(new RastriginFunction());
+		functions.add(new CirclesFunction());
+		functions.add(new StaircaseFunction());
+		functions.add(new PlateausFunction());
+		functions.add(new HimmelblauFunction());
+		functions.add(new EqualPeaksFunction());
+		functions.add(new BealeFunction());
+		functions.add(new BoothFunction());
+		functions.add(new MatyasFunction());
+		functions.add(new LeviFunctionN13());
+		functions.add(new EasomFunction());
+		functions.add(new EggholderFunction());
+		functions.add(new HoelderTableFunction());
+		functions.add(new SchafferN2Function());
+		functions.add(new DistanceToPoint());
 
 		functionChoiceBox.getItems().addAll(FXCollections.observableList(functions));
 		functionChoiceBox.getSelectionModel().selectFirst();
@@ -81,47 +120,69 @@ public class MainWindowController implements Initializable, IterationCallback {
 
 		glowwormSizeSlider.valueProperty().addListener(new ChangeListener<Number>(){
 			@Override public void changed(ObservableValue o,Number oldVal, Number newVal){
-				glowwormSizeTextField.setText(Double.toString(newVal.intValue()));
+				glowwormSizeTextField.setText(Integer.toString(newVal.intValue()));
 			}
 		});
 		glowwormSizeTextField.setText(Double.toString(Math.floor(glowwormSizeSlider.getValue())));
+
+		animationSpeedSlider.valueProperty().addListener(new ChangeListener<Number>(){
+			@Override public void changed(ObservableValue o,Number oldVal, Number newVal){
+				animationSpeedTextField.setText(Integer.toString(newVal.intValue()));
+				animationSpeed = newVal.intValue();
+			}
+		});
+		animationSpeedTextField.setText(Double.toString(Math.floor(animationSpeedSlider.getValue())));
 
 		this.gc = canvas.getGraphicsContext2D();
 		this.resetForm();
 
 		resetCanvas();
+
+		this.lastUpdate = System.nanoTime();
+		timer = new AnimationTimer() {
+
+			/*
+			 * The AnimationTimer's handle method is invoked once for each frame that is rendered, on the FX Application Thread.
+			 */
+			public void handle(long now) {
+
+				// 1 sec
+				if (now - lastUpdate >= (1_000_000*animationSpeed)) {
+					algorithm.step();
+					lastUpdate = now ;
+				}
+			}
+		};
 	}
 
 	@FXML
-	private void drawCanvas() {
-		resetCanvas();
+	private void startStop() {
 
-		/**
-		 * Construct GSO parameters
-		 */
-		GSOParameters parameters = new GSOParameters(
-				Integer.parseInt(populationSize.getText()), // population size
-				Integer.parseInt(maxIterations.getText()),  // max iterations
-				Double.parseDouble(initialRange.getText()), // initial sensor range
-				Double.parseDouble(initialRange.getText())  // max sensor range
-				);
+		if(animationIsRunning) {
 
-		/**
-		 * Construct GSOAlgorithm
-		 */
-		GSOAlgorithm gso = new GSOAlgorithm(parameters, function, this);
-		CompletableFuture<Void> fut;
-		prepareDrawBegin();
+			timer.stop();
+			animationIsRunning = false;
+			startStopButton.setText("Start");
 
-		/**
-		 * Start GSOAlgorithm
-		 */
-		fut = gso.start();
-		fut.thenRun(() -> {
-			Platform.runLater(() -> {
-				prepareDrawEnd();
-			});
-		});
+			enableForm();
+		} else {
+			resetCanvas();
+
+			GSOParameters parameters = new GSOParameters(
+					Integer.parseInt(populationSize.getText()), // population size
+					Integer.parseInt(maxIterations.getText()),  // max iterations
+					Double.parseDouble(initialRange.getText()), // initial sensor range
+					Double.parseDouble(initialRange.getText())  // max sensor range
+					);
+			algorithm = new GSOAlgorithm(parameters, function, this);
+			algorithm.initialize();
+
+			disableForm();
+
+			timer.start();
+			animationIsRunning = true;
+			startStopButton.setText("Stop");
+		}		
 	}
 
 	@FXML
@@ -139,7 +200,7 @@ public class MainWindowController implements Initializable, IterationCallback {
 		functionChoiceBox.getSelectionModel().selectFirst();
 	}
 
-	private void prepareDrawBegin() {
+	private void disableForm() {
 		populationSize.setDisable(true);
 		maxIterations.setDisable(true);
 		initialRange.setDisable(true);
@@ -147,10 +208,9 @@ public class MainWindowController implements Initializable, IterationCallback {
 		glowwormSizeSlider.setDisable(true);
 		functionChoiceBox.setDisable(true);
 		resetButton.setDisable(true);
-		drawButton.setDisable(true);
 	}
 
-	private void prepareDrawEnd() {
+	private void enableForm() {
 		populationSize.setDisable(false);
 		maxIterations.setDisable(false);
 		initialRange.setDisable(false);
@@ -158,7 +218,6 @@ public class MainWindowController implements Initializable, IterationCallback {
 		glowwormSizeSlider.setDisable(false);
 		functionChoiceBox.setDisable(false);
 		resetButton.setDisable(false);
-		drawButton.setDisable(false);
 	}
 
 	public void resetCanvas(){
@@ -206,19 +265,14 @@ public class MainWindowController implements Initializable, IterationCallback {
 				}
 
 				/*WritableImage wim = new WritableImage(CANVAS_WIDTH, CANVAS_WIDTH);
-				WritableImage snapshot = canvas.snapshot(null, wim);
-				File output = new File("out/gso-" + String.format("%05d", gso.t) + ".png");
-
-                try {
-					ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "png", output);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}*/
+					WritableImage snapshot = canvas.snapshot(null, wim);
+					File output = new File("out/gso-" + String.format("%05d", gso.t) + ".png");
+	                try {
+						ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "png", output);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}*/
 			}
 		});
 	}
-}
-
-interface IterationCallback {
-	public void iterationFinished(GSOAlgorithm gso);
 }
