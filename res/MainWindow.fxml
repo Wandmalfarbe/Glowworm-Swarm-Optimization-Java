@@ -43,15 +43,15 @@
                         <TextField fx:id="glowwormSizeTextField" editable="false" maxWidth="50.0" prefHeight="27.0" prefWidth="50.0" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Animation Speed" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Animation Delay" />
                   <HBox spacing="8.0">
                      <children>
-                        <Slider fx:id="animationSpeedSlider" max="2000" min="1" value="500" HBox.hgrow="ALWAYS">
+                        <Slider fx:id="animationDelaySlider" max="2000" min="1" value="500" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets top="5.0" />
                            </HBox.margin>
                         </Slider>
-                        <TextField fx:id="animationSpeedTextField" editable="false" maxWidth="50.0" prefHeight="27.0" prefWidth="50.0" HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="animationDelayTextField" editable="false" maxWidth="50.0" prefHeight="27.0" prefWidth="50.0" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   <Separator prefWidth="200.0" />

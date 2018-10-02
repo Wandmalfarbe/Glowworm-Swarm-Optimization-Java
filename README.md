@@ -4,7 +4,7 @@
 
 A Java implementation and visualization of the glowworm swarm optimization (GSO) algorithm invented by Krishnanand N. Kaipa and Debasish Ghose for the capturing of multiple optima of multimodal functions.
 
-![A preview of the Java application.](preview/java-app.png)
+![A preview of the Java application with the peaks function.](preview/gso-java-app-1.png)
 
 This app was created as part of a seminar work and served as an aid to understand the glowworm swarm optimization. It is a simple visualization of the glowworm movement with the target function in the background. You can choose between several target functions from the paper:
 
@@ -21,6 +21,8 @@ The parameters *population size*, *iterations*, and *the initial neighborhood ra
 ## Preview GIF
 
 ![An animated GIF of the GSO algorithm and the moving glowworms.](preview/animation-optim.gif)
+
+![A preview of the Java application with the Hölder table function.](preview/gso-java-app-2.png)
 
 ## Credits
 

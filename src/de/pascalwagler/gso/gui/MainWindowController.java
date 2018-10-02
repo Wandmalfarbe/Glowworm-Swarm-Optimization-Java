@@ -55,8 +55,8 @@ public class MainWindowController implements Initializable, IterationCallback {
 	@FXML private CheckBox showTrail;
 	@FXML private Slider glowwormSizeSlider;
 	@FXML private TextField glowwormSizeTextField;
-	@FXML private Slider animationSpeedSlider;
-	@FXML private TextField animationSpeedTextField;
+	@FXML private Slider animationDelaySlider;
+	@FXML private TextField animationDelayTextField;
 	@FXML private ChoiceBox<ObjectiveFunction> functionChoiceBox;
 	@FXML private Button resetButton;
 	@FXML private Button startStopButton;
@@ -76,7 +76,7 @@ public class MainWindowController implements Initializable, IterationCallback {
 	private GSOAlgorithm algorithm;
 	private AnimationTimer timer;
 	private boolean animationIsRunning = false;
-	private int animationSpeed = 500;
+	private int animationDelay = 500;
 
 	public MainWindowController() {
 
@@ -125,13 +125,13 @@ public class MainWindowController implements Initializable, IterationCallback {
 		});
 		glowwormSizeTextField.setText(Double.toString(Math.floor(glowwormSizeSlider.getValue())));
 
-		animationSpeedSlider.valueProperty().addListener(new ChangeListener<Number>(){
+		animationDelaySlider.valueProperty().addListener(new ChangeListener<Number>(){
 			@Override public void changed(ObservableValue o,Number oldVal, Number newVal){
-				animationSpeedTextField.setText(Integer.toString(newVal.intValue()));
-				animationSpeed = newVal.intValue();
+				animationDelayTextField.setText(Integer.toString(newVal.intValue()));
+				animationDelay = newVal.intValue();
 			}
 		});
-		animationSpeedTextField.setText(Double.toString(Math.floor(animationSpeedSlider.getValue())));
+		animationDelayTextField.setText(Double.toString(Math.floor(animationDelaySlider.getValue())));
 
 		this.gc = canvas.getGraphicsContext2D();
 		this.resetForm();
@@ -147,7 +147,7 @@ public class MainWindowController implements Initializable, IterationCallback {
 			public void handle(long now) {
 
 				// 1 sec
-				if (now - lastUpdate >= (1_000_000*animationSpeed)) {
+				if (now - lastUpdate >= (1_000_000*animationDelay)) {
 					algorithm.step();
 					lastUpdate = now ;
 				}
